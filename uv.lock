@@ -404,6 +404,7 @@ dependencies = [
     { name = "openai" },
     { name = "pydantic" },
     { name = "python-dotenv" },
+    { name = "requests" },
 ]
 
 [package.optional-dependencies]
@@ -424,6 +425,7 @@ requires-dist = [
     { name = "pytest", marker = "extra == 'test'", specifier = ">=7.3.1" },
     { name = "pytest-asyncio", marker = "extra == 'test'", specifier = ">=0.20.3" },
     { name = "python-dotenv", specifier = ">=1.0.1" },
+    { name = "requests", specifier = ">=2.31.0" },
 ]
 provides-extras = ["test"]
 
