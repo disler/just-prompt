@@ -49,7 +49,7 @@ def prompt_from_file_to_file(file: str, models_prefixed_by_provider: List[str] =
         models_used = [model.strip() for model in default_models.split(",")]
     
     for i, (model_string, response) in enumerate(zip(models_used, responses)):
-        # Sanitize model string for filename (replace colons with underscores)
+        # Sanitize model string for filename (replace colons and slashes with underscores)
         safe_model_name = model_string.replace(":", "_").replace("/", "_")
         
         # Create output filename with .md extension
