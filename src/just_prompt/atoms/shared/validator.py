@@ -103,7 +103,8 @@ def print_provider_availability(detailed: bool = True) -> None:
             "gemini": "GEMINI_API_KEY", 
             "groq": "GROQ_API_KEY",
             "deepseek": "DEEPSEEK_API_KEY",
-            "ollama": "OLLAMA_HOST"
+            "ollama": "OLLAMA_HOST",
+            "openrouter": "OPENROUTER_API_KEY"
         }
         
         logger.warning(f"The following providers are unavailable due to missing API keys:")

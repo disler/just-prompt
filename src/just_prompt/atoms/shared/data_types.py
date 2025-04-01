@@ -15,6 +15,7 @@ class ModelProviders(Enum):
     GROQ = ("groq", "q")
     DEEPSEEK = ("deepseek", "d")
     OLLAMA = ("ollama", "l")
+    OPENROUTER = ("openrouter", "r")
     
     def __init__(self, full_name, short_name):
         self.full_name = full_name
