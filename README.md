@@ -66,7 +66,7 @@ The following MCP tools are available in the server:
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/just-prompt.git
+git clone https://github.com/disler/just-prompt.git
 cd just-prompt
 
 # Install with pip
