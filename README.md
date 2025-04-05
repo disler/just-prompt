@@ -1,4 +1,5 @@
 # Just Prompt - A lightweight MCP server for LLM providers
+[![smithery badge](https://smithery.ai/badge/@disler/just-prompt)](https://smithery.ai/server/@disler/just-prompt)
 
 `just-prompt` is a Model Control Protocol (MCP) server that provides a unified interface to various Large Language Model (LLM) providers including OpenAI, Anthropic, Google Gemini, Groq, DeepSeek, and Ollama.
 
@@ -64,6 +65,15 @@ The following MCP tools are available in the server:
 
 ## Installation
 
+### Installing via Smithery
+
+To install Just Prompt for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@disler/just-prompt):
+
+```bash
+npx -y @smithery/cli install @disler/just-prompt --client claude
+```
+
+### Manual Installation
 ```bash
 # Clone the repository
 git clone https://github.com/yourusername/just-prompt.git
