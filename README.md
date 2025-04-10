@@ -52,6 +52,9 @@ The following MCP tools are available in the server:
 - `l` or `ollama`: Ollama 
   - `l:llama3.1`
   - `ollama:llama3.1`
+- `r` or `openrouter`: OpenRouter
+  - `r:anthropic/claude-3-7-sonnet`
+  - `openrouter:anthropic/claude-3-7-sonnet`
 
 ## Features
 
@@ -89,6 +92,7 @@ ANTHROPIC_API_KEY=your_anthropic_api_key_here
 GEMINI_API_KEY=your_gemini_api_key_here
 GROQ_API_KEY=your_groq_api_key_here
 DEEPSEEK_API_KEY=your_deepseek_api_key_here
+OPENROUTER_API_KEY=your_openrouter_api_key_here
 OLLAMA_HOST=http://localhost:11434
 ```
 
