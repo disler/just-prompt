@@ -2,6 +2,10 @@
 
 `just-prompt` is a Model Control Protocol (MCP) server that provides a unified interface to various Large Language Model (LLM) providers including OpenAI, Anthropic, Google Gemini, Groq, DeepSeek, and Ollama. See how we use the `ceo_and_board` tool to make [hard decisions easy with o3 here](https://youtu.be/LEMLntjfihA).
 
+<a href="https://glama.ai/mcp/servers/@disler/just-prompt">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@disler/just-prompt/badge" alt="Just Prompt MCP server" />
+</a>
+
 <img src="images/just-prompt-logo.png" alt="Just Prompt Logo" width="700" height="auto">
 
 <img src="images/o3-as-a-ceo.png" alt="Just Prompt Logo" width="700" height="auto">
@@ -279,8 +283,7 @@ Examples:
 * `openai:o4-mini:low`
 * `o:o4-mini:high`
 
-When a reasoning suffix is present, **just‑prompt** automatically switches to
-the OpenAI *Responses* API (when available) and sets the corresponding
+When a reasoning suffix is present, **just‑prompt** automatically switches to the OpenAI *Responses* API (when available) and sets the corresponding
 `reasoning.effort` parameter.  If the installed OpenAI SDK is older, it
 gracefully falls back to the Chat Completions endpoint and embeds an internal
 system instruction to approximate the requested effort level.
