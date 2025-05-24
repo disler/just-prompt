@@ -323,3 +323,8 @@ Notes:
 - https://api-docs.deepseek.com/api/list-models
 - https://github.com/ollama/ollama-python
 - https://github.com/openai/openai-python
+
+## Master AI Coding 
+Learn to code with AI with foundational [Principles of AI Coding](https://agenticengineer.com/principled-ai-coding?y=jprompt)
+
+Follow the [IndyDevDan youtube channel](https://www.youtube.com/@indydevdan) for more AI coding tips and tricks.
