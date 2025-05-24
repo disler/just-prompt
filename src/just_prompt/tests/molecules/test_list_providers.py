@@ -37,3 +37,15 @@ def test_list_providers():
         elif provider["name"] == "ANTHROPIC":
             assert provider["full_name"] == "anthropic"
             assert provider["short_name"] == "a"
+        elif provider["name"] == "GEMINI":
+            assert provider["full_name"] == "gemini"
+            assert provider["short_name"] == "g"
+        elif provider["name"] == "GROQ":
+            assert provider["full_name"] == "groq"
+            assert provider["short_name"] == "q"
+        elif provider["name"] == "DEEPSEEK":
+            assert provider["full_name"] == "deepseek"
+            assert provider["short_name"] == "d"
+        elif provider["name"] == "OLLAMA":
+            assert provider["full_name"] == "ollama"
+            assert provider["short_name"] == "l"

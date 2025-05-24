@@ -2,7 +2,7 @@
 Utility functions for just-prompt.
 """
 
-from typing import Tuple, List
+from typing import Tuple, List, Optional
 import os
 from dotenv import load_dotenv
 import logging
@@ -77,7 +77,7 @@ def get_models_prefixed_by_provider(provider_prefix: str, model_name: str) -> st
     return f"{provider}:{model_name}"
 
 
-def get_api_key(provider: str) -> str:
+def get_api_key(provider: str) -> Optional[str]:
     """
     Get the API key for a provider from environment variables.
     
@@ -85,7 +85,8 @@ def get_api_key(provider: str) -> str:
         provider: Provider name (full name)
         
     Returns:
-        API key as string
+        API key as string or ``None`` if the provider is unsupported or no
+        environment variable is set
     """
     key_mapping = {
         "openai": "OPENAI_API_KEY",

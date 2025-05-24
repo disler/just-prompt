@@ -54,7 +54,7 @@ The following MCP tools are available in the server:
   - `anthropic:claude-3-5-haiku`
 - `g` or `gemini`: Google Gemini 
   - `g:gemini-2.5-pro-exp-03-25`
-  - `gemini:gemini:gemini-2.5-pro-exp-03-25`
+  - `gemini:gemini-2.5-pro-exp-03-25`
 - `q` or `groq`: Groq 
   - `q:llama-3.1-70b-versatile`
   - `groq:llama-3.1-70b-versatile`
