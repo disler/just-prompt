@@ -169,9 +169,9 @@ def list_models() -> List[str]:
         
         # Get the list of models
         models = []
-        available_models = client.list_models()
+        available_models = client.models.list()
         for m in available_models:
-            if "generateContent" in m.supported_generation_methods:
+            if "generateContent" in m.supported_actions:
                 models.append(m.name)
                 
         # Format model names - strip the "models/" prefix if present
