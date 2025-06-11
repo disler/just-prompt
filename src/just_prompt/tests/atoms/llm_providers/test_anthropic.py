@@ -46,15 +46,22 @@ def test_parse_thinking_suffix():
     assert anthropic.parse_thinking_suffix("claude-3-7-sonnet") == ("claude-3-7-sonnet", 0)
     assert anthropic.parse_thinking_suffix("claude-3-5-haiku-20241022") == ("claude-3-5-haiku-20241022", 0)
     
-    # Test cases with supported model and k suffixes
+    # Test cases with supported claude-3-7 model and k suffixes
     assert anthropic.parse_thinking_suffix("claude-3-7-sonnet-20250219:1k") == ("claude-3-7-sonnet-20250219", 1024)
     assert anthropic.parse_thinking_suffix("claude-3-7-sonnet-20250219:4k") == ("claude-3-7-sonnet-20250219", 4096)
     assert anthropic.parse_thinking_suffix("claude-3-7-sonnet-20250219:15k") == ("claude-3-7-sonnet-20250219", 15360)  # 15*1024=15360 < 16000
     
-    # Test cases with supported model and numeric suffixes
+    # Test cases with supported claude-4 models and k suffixes  
+    assert anthropic.parse_thinking_suffix("claude-opus-4-20250514:1k") == ("claude-opus-4-20250514", 1024)
+    assert anthropic.parse_thinking_suffix("claude-opus-4-20250514:4k") == ("claude-opus-4-20250514", 4096)
+    assert anthropic.parse_thinking_suffix("claude-sonnet-4-20250514:1k") == ("claude-sonnet-4-20250514", 1024)
+    assert anthropic.parse_thinking_suffix("claude-sonnet-4-20250514:8k") == ("claude-sonnet-4-20250514", 8192)
+    
+    # Test cases with supported models and numeric suffixes
     assert anthropic.parse_thinking_suffix("claude-3-7-sonnet-20250219:1024") == ("claude-3-7-sonnet-20250219", 1024)
     assert anthropic.parse_thinking_suffix("claude-3-7-sonnet-20250219:4096") == ("claude-3-7-sonnet-20250219", 4096)
-    assert anthropic.parse_thinking_suffix("claude-3-7-sonnet-20250219:8000") == ("claude-3-7-sonnet-20250219", 8000)
+    assert anthropic.parse_thinking_suffix("claude-opus-4-20250514:8000") == ("claude-opus-4-20250514", 8000)
+    assert anthropic.parse_thinking_suffix("claude-sonnet-4-20250514:2048") == ("claude-sonnet-4-20250514", 2048)
     
     # Test cases with non-supported model
     assert anthropic.parse_thinking_suffix("claude-3-7-sonnet:1k") == ("claude-3-7-sonnet", 0)
@@ -62,7 +69,7 @@ def test_parse_thinking_suffix():
     
     # Test cases with out-of-range values (should adjust to valid range)
     assert anthropic.parse_thinking_suffix("claude-3-7-sonnet-20250219:500") == ("claude-3-7-sonnet-20250219", 1024)  # Below min 1024, should use 1024
-    assert anthropic.parse_thinking_suffix("claude-3-7-sonnet-20250219:20000") == ("claude-3-7-sonnet-20250219", 16000)  # Above max 16000, should use 16000
+    assert anthropic.parse_thinking_suffix("claude-opus-4-20250514:20000") == ("claude-opus-4-20250514", 16000)  # Above max 16000, should use 16000
 
 
 def test_prompt_with_thinking():

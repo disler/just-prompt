@@ -45,8 +45,13 @@ def parse_thinking_suffix(model: str) -> Tuple[str, int]:
     base_model = match.group(1)
     thinking_suffix = match.group(2)
     
-    # Validate the model - only claude-3-7-sonnet-20250219 supports thinking
-    if base_model != "claude-3-7-sonnet-20250219":
+    # Validate the model - only specific Claude models support thinking
+    supported_thinking_models = [
+        "claude-3-7-sonnet-20250219",
+        "claude-opus-4-20250514", 
+        "claude-sonnet-4-20250514"
+    ]
+    if base_model not in supported_thinking_models:
         logger.warning(f"Model {base_model} does not support thinking, ignoring thinking suffix")
         return base_model, 0
     

@@ -50,21 +50,21 @@ class PromptSchema(BaseModel):
     )
 
 class PromptFromFileSchema(BaseModel):
-    file: str = Field(..., description="Path to the file containing the prompt")
+    abs_file_path: str = Field(..., description="Absolute path to the file containing the prompt (must be an absolute path, not relative)")
     models_prefixed_by_provider: Optional[List[str]] = Field(
         None, 
         description="List of models with provider prefixes (e.g., 'openai:gpt-4o' or 'o:gpt-4o'). If not provided, uses default models."
     )
 
 class PromptFromFileToFileSchema(BaseModel):
-    file: str = Field(..., description="Path to the file containing the prompt")
+    abs_file_path: str = Field(..., description="Absolute path to the file containing the prompt (must be an absolute path, not relative)")
     models_prefixed_by_provider: Optional[List[str]] = Field(
         None, 
         description="List of models with provider prefixes (e.g., 'openai:gpt-4o' or 'o:gpt-4o'). If not provided, uses default models."
     )
-    output_dir: str = Field(
+    abs_output_dir: str = Field(
         default=".", 
-        description="Directory to save the response files to (default: current directory)"
+        description="Absolute directory path to save the response files to (must be an absolute path, not relative. Default: current directory)"
     )
 
 class ListProvidersSchema(BaseModel):
@@ -74,14 +74,14 @@ class ListModelsSchema(BaseModel):
     provider: str = Field(..., description="Provider to list models for (e.g., 'openai' or 'o')")
     
 class CEOAndBoardSchema(BaseModel):
-    file: str = Field(..., description="Path to the file containing the prompt")
+    abs_file_path: str = Field(..., description="Absolute path to the file containing the prompt (must be an absolute path, not relative)")
     models_prefixed_by_provider: Optional[List[str]] = Field(
         None, 
         description="List of models with provider prefixes to act as board members. If not provided, uses default models."
     )
-    output_dir: str = Field(
+    abs_output_dir: str = Field(
         default=".", 
-        description="Directory to save the response files and CEO decision"
+        description="Absolute directory path to save the response files and CEO decision (must be an absolute path, not relative)"
     )
     ceo_model: str = Field(
         default=DEFAULT_CEO_MODEL,
@@ -126,17 +126,17 @@ async def serve(default_models: str = DEFAULT_MODEL) -> None:
             ),
             Tool(
                 name=JustPromptTools.PROMPT_FROM_FILE,
-                description="Send a prompt from a file to multiple LLM models",
+                description="Send a prompt from a file to multiple LLM models. IMPORTANT: You MUST provide an absolute file path (e.g., /path/to/file or C:\\path\\to\\file), not a relative path.",
                 inputSchema=PromptFromFileSchema.schema(),
             ),
             Tool(
                 name=JustPromptTools.PROMPT_FROM_FILE_TO_FILE,
-                description="Send a prompt from a file to multiple LLM models and save responses to files",
+                description="Send a prompt from a file to multiple LLM models and save responses to files. IMPORTANT: You MUST provide absolute paths (e.g., /path/to/file or C:\\path\\to\\file) for both file and output directory, not relative paths.",
                 inputSchema=PromptFromFileToFileSchema.schema(),
             ),
             Tool(
                 name=JustPromptTools.CEO_AND_BOARD,
-                description="Send a prompt to multiple 'board member' models and have a 'CEO' model make a decision based on their responses",
+                description="Send a prompt to multiple 'board member' models and have a 'CEO' model make a decision based on their responses. IMPORTANT: You MUST provide absolute paths (e.g., /path/to/file or C:\\path\\to\\file) for both file and output directory, not relative paths.",
                 inputSchema=CEOAndBoardSchema.schema(),
             ),
             Tool(
@@ -172,7 +172,7 @@ async def serve(default_models: str = DEFAULT_MODEL) -> None:
                 
             elif name == JustPromptTools.PROMPT_FROM_FILE:
                 models_to_use = arguments.get("models_prefixed_by_provider")
-                responses = prompt_from_file(arguments["file"], models_to_use)
+                responses = prompt_from_file(arguments["abs_file_path"], models_to_use)
                 
                 # Get the model names that were actually used
                 models_used = models_to_use if models_to_use else [model.strip() for model in os.environ.get("DEFAULT_MODELS", DEFAULT_MODEL).split(",")]
@@ -184,10 +184,10 @@ async def serve(default_models: str = DEFAULT_MODEL) -> None:
                 )]
                 
             elif name == JustPromptTools.PROMPT_FROM_FILE_TO_FILE:
-                output_dir = arguments.get("output_dir", ".")
+                output_dir = arguments.get("abs_output_dir", ".")
                 models_to_use = arguments.get("models_prefixed_by_provider")
                 file_paths = prompt_from_file_to_file(
-                    arguments["file"], 
+                    arguments["abs_file_path"], 
                     models_to_use,
                     output_dir
                 )
@@ -215,14 +215,14 @@ async def serve(default_models: str = DEFAULT_MODEL) -> None:
                 )]
                 
             elif name == JustPromptTools.CEO_AND_BOARD:
-                file_path = arguments["file"]
-                output_dir = arguments.get("output_dir", ".")
+                file_path = arguments["abs_file_path"]
+                output_dir = arguments.get("abs_output_dir", ".")
                 models_to_use = arguments.get("models_prefixed_by_provider")
                 ceo_model = arguments.get("ceo_model", DEFAULT_CEO_MODEL)
                 
                 ceo_decision_file = ceo_and_board_prompt(
-                    from_file=file_path,
-                    output_dir=output_dir,
+                    abs_from_file=file_path,
+                    abs_output_dir=output_dir,
                     models_prefixed_by_provider=models_to_use,
                     ceo_model=ceo_model
                 )

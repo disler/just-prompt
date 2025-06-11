@@ -38,8 +38,8 @@ DEFAULT_CEO_DECISION_PROMPT = """
 
 
 def ceo_and_board_prompt(
-    from_file: str,
-    output_dir: str = ".",
+    abs_from_file: str,
+    abs_output_dir: str = ".",
     models_prefixed_by_provider: List[str] = None,
     ceo_model: str = DEFAULT_CEO_MODEL,
     ceo_decision_prompt: str = DEFAULT_CEO_DECISION_PROMPT
@@ -49,8 +49,8 @@ def ceo_and_board_prompt(
     and then have a 'CEO' model make a decision based on the responses.
 
     Args:
-        from_file: Path to the text file containing the original prompt
-        output_dir: Directory to save response files
+        abs_from_file: Absolute path to the text file containing the original prompt (must be an absolute path, not relative)
+        abs_output_dir: Absolute directory path to save response files (must be an absolute path, not relative)
         models_prefixed_by_provider: List of model strings in format "provider:model"
                                    to act as the board members
         ceo_model: Model to use for the CEO decision in format "provider:model"
@@ -60,26 +60,26 @@ def ceo_and_board_prompt(
         Path to the CEO decision file
     """
     # Validate output directory
-    output_path = Path(output_dir)
+    output_path = Path(abs_output_dir)
     if not output_path.exists():
         output_path.mkdir(parents=True, exist_ok=True)
 
     if not output_path.is_dir():
-        raise ValueError(f"Not a directory: {output_dir}")
+        raise ValueError(f"Not a directory: {abs_output_dir}")
 
     # Get the original prompt from the file
     try:
-        with open(from_file, 'r', encoding='utf-8') as f:
+        with open(abs_from_file, 'r', encoding='utf-8') as f:
             original_prompt = f.read()
     except Exception as e:
-        logger.error(f"Error reading file {from_file}: {e}")
+        logger.error(f"Error reading file {abs_from_file}: {e}")
         raise ValueError(f"Error reading file: {str(e)}")
 
     # Step 1: Get board members' responses
     board_response_files = prompt_from_file_to_file(
-        from_file,
-        models_prefixed_by_provider,
-        output_dir
+        abs_file_path=abs_from_file,
+        models_prefixed_by_provider=models_prefixed_by_provider,
+        abs_output_dir=abs_output_dir
     )
 
     # Get the models that were actually used

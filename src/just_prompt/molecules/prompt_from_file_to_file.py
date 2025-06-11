@@ -13,33 +13,33 @@ logger = logging.getLogger(__name__)
 
 
 def prompt_from_file_to_file(
-    file: str, models_prefixed_by_provider: List[str] = None, output_dir: str = "."
+    abs_file_path: str, models_prefixed_by_provider: List[str] = None, abs_output_dir: str = "."
 ) -> List[str]:
     """
     Read text from a file, send it as prompt to multiple models, and save responses to files.
 
     Args:
-        file: Path to the text file
+        abs_file_path: Absolute path to the text file (must be an absolute path, not relative)
         models_prefixed_by_provider: List of model strings in format "provider:model"
                                     If None, uses the DEFAULT_MODELS environment variable
-        output_dir: Directory to save response files
+        abs_output_dir: Absolute directory path to save response files (must be an absolute path, not relative)
 
     Returns:
         List of paths to the output files
     """
     # Validate output directory
-    output_path = Path(output_dir)
+    output_path = Path(abs_output_dir)
     if not output_path.exists():
         output_path.mkdir(parents=True, exist_ok=True)
 
     if not output_path.is_dir():
-        raise ValueError(f"Not a directory: {output_dir}")
+        raise ValueError(f"Not a directory: {abs_output_dir}")
 
     # Get the base name of the input file
-    input_file_name = Path(file).stem
+    input_file_name = Path(abs_file_path).stem
 
     # Get responses
-    responses = prompt_from_file(file, models_prefixed_by_provider)
+    responses = prompt_from_file(abs_file_path, models_prefixed_by_provider)
 
     # Save responses to files
     output_files = []

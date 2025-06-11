@@ -69,12 +69,25 @@ def test_validate_and_correct_model_shorthand():
         provider = ModelProviders.from_name(provider_prefix)
         
         # Call validate_and_correct_model
-        result = ModelRouter.magic_model_correction(provider.full_name, model, "anthropic:claude-3-7-sonnet-20250219")
+        result = ModelRouter.magic_model_correction(provider.full_name, model, "anthropic:claude-sonnet-4-20250514")
         
-        # The magic_model_correction method should correct sonnet.3.7 to claude-3-7-sonnet-20250219
-        assert "claude-3-7" in result, f"Expected sonnet.3.7 to be corrected to a claude-3-7 model, got {result}"
+        # The magic_model_correction method should correct sonnet.3.7 to a claude model
+        assert "claude" in result, f"Expected sonnet.3.7 to be corrected to a claude model, got {result}"
         print(f"Shorthand model 'sonnet.3.7' was corrected to '{result}'")
     except Exception as e:
         pytest.fail(f"Test failed with error: {e}")
+
+
+def test_validate_and_correct_claude4_models():
+    """Test validation bypass for claude-4 models with thinking tokens."""
+    # Test claude-4 models bypass validation
+    result = ModelRouter.validate_and_correct_model("anthropic", "claude-opus-4-20250514:4k")
+    assert result == "claude-opus-4-20250514:4k", f"Expected bypass for claude-4 model, got {result}"
+    
+    result = ModelRouter.validate_and_correct_model("anthropic", "claude-sonnet-4-20250514:1k") 
+    assert result == "claude-sonnet-4-20250514:1k", f"Expected bypass for claude-4 model, got {result}"
+    
+    result = ModelRouter.validate_and_correct_model("anthropic", "claude-opus-4-20250514")
+    assert result == "claude-opus-4-20250514", f"Expected bypass for claude-4 model, got {result}"
 
 

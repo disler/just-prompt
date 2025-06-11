@@ -29,7 +29,13 @@ class ModelRouter:
             Validated and potentially corrected model name
         """
         # Early return for our thinking token models to bypass validation
-        if "claude-3-7-sonnet-20250219" in model_name or "gemini-2.5-flash-preview-04-17" in model_name:
+        thinking_models = [
+            "claude-3-7-sonnet-20250219",
+            "claude-opus-4-20250514", 
+            "claude-sonnet-4-20250514",
+            "gemini-2.5-flash-preview-04-17"
+        ]
+        if any(thinking_model in model_name for thinking_model in thinking_models):
             return model_name
 
         try:

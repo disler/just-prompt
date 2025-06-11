@@ -48,16 +48,16 @@ class TestCEOAndBoardPrompt:
         # Test our function
         input_file = "test_prompt.txt"
         result = ceo_and_board_prompt(
-            from_file=input_file,
-            output_dir=str(tmpdir),
+            abs_from_file=input_file,
+            abs_output_dir=str(tmpdir),
             models_prefixed_by_provider=["a:claude-3", "o:gpt-4o"]
         )
         
         # Assertions
         mock_prompt_from_file_to_file.assert_called_once_with(
-            input_file,
-            ["a:claude-3", "o:gpt-4o"],
-            str(tmpdir)
+            abs_file_path=input_file,
+            models_prefixed_by_provider=["a:claude-3", "o:gpt-4o"],
+            abs_output_dir=str(tmpdir)
         )
         
         # Check that the CEO model was called with the right prompt
@@ -117,15 +117,15 @@ class TestCEOAndBoardPrompt:
         # Test with defaults
         input_file = "test_prompt.txt"
         result = ceo_and_board_prompt(
-            from_file=input_file,
-            output_dir=str(tmpdir)
+            abs_from_file=input_file,
+            abs_output_dir=str(tmpdir)
         )
         
         # Assertions
         mock_prompt_from_file_to_file.assert_called_once_with(
-            input_file,
-            None,
-            str(tmpdir)
+            abs_file_path=input_file,
+            models_prefixed_by_provider=None,
+            abs_output_dir=str(tmpdir)
         )
         
         # Check that the default CEO model was used
@@ -151,4 +151,4 @@ class TestCEOAndBoardPrompt:
         
         with patch("builtins.open", mock_open_instance):
             with pytest.raises(ValueError, match=f"Error reading file"):
-                ceo_and_board_prompt(from_file=non_existent_file)
+                ceo_and_board_prompt(abs_from_file=non_existent_file)

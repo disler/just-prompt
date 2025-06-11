@@ -18,20 +18,20 @@ The following MCP tools are available in the server:
 
 - **`prompt_from_file`**: Send a prompt from a file to multiple LLM models
   - Parameters:
-    - `file`: Path to the file containing the prompt
+    - `abs_file_path`: Absolute path to the file containing the prompt (must be an absolute path, not relative)
     - `models_prefixed_by_provider` (optional): List of models with provider prefixes. If not provided, uses default models.
 
 - **`prompt_from_file_to_file`**: Send a prompt from a file to multiple LLM models and save responses as markdown files
   - Parameters:
-    - `file`: Path to the file containing the prompt
+    - `abs_file_path`: Absolute path to the file containing the prompt (must be an absolute path, not relative)
     - `models_prefixed_by_provider` (optional): List of models with provider prefixes. If not provided, uses default models.
-    - `output_dir` (default: "."): Directory to save the response markdown files to
+    - `abs_output_dir` (default: "."): Absolute directory path to save the response markdown files to (must be an absolute path, not relative)
 
 - **`ceo_and_board`**: Send a prompt to multiple 'board member' models and have a 'CEO' model make a decision based on their responses
   - Parameters:
-    - `file`: Path to the file containing the prompt
+    - `abs_file_path`: Absolute path to the file containing the prompt (must be an absolute path, not relative)
     - `models_prefixed_by_provider` (optional): List of models with provider prefixes to act as board members. If not provided, uses default models.
-    - `output_dir` (default: "."): Directory to save the response files and CEO decision
+    - `abs_output_dir` (default: "."): Absolute directory path to save the response files and CEO decision (must be an absolute path, not relative)
     - `ceo_model` (default: "openai:o3"): Model to use for the CEO decision in format "provider:model"
 
 - **`list_providers`**: List all available LLM providers
@@ -107,7 +107,7 @@ OLLAMA_HOST=http://localhost:11434
 ## Claude Code Installation
 > In all these examples, replace the directory with the path to the just-prompt directory.
 
-Default models set to `openai:o3:high`, `openai:o4-mini:high`, `anthropic:claude-3-7-sonnet-20250219:4k`, `gemini:gemini-2.5-pro-preview-03-25`, and `gemini:gemini-2.5-flash-preview-04-17`.
+Default models set to `openai:o3:high`, `openai:o4-mini:high`, `anthropic:claude-opus-4-20250514`, `anthropic:claude-sonnet-4-20250514`, `gemini:gemini-2.5-pro-preview-03-25`, and `gemini:gemini-2.5-flash-preview-04-17`.
 
 If you use Claude Code right out of the repository you can see in the .mcp.json file we set the default models to...
 
@@ -123,7 +123,7 @@ If you use Claude Code right out of the repository you can see in the .mcp.json 
         "run",
         "just-prompt",
         "--default-models",
-        "openai:o3:high,openai:o4-mini:high,anthropic:claude-3-7-sonnet-20250219:4k,gemini:gemini-2.5-pro-preview-03-25,gemini:gemini-2.5-flash-preview-04-17"
+        "openai:o3:high,openai:o4-mini:high,anthropic:claude-opus-4-20250514,anthropic:claude-sonnet-4-20250514,gemini:gemini-2.5-pro-preview-03-25,gemini:gemini-2.5-flash-preview-04-17"
       ],
       "env": {}
     }
@@ -166,7 +166,7 @@ With multiple default models:
 ```
 {
     "command": "uv",
-    "args": ["--directory", ".", "run", "just-prompt", "--default-models", "openai:o3:high,openai:o4-mini:high,anthropic:claude-3-7-sonnet-20250219:4k,gemini:gemini-2.5-pro-preview-03-25,gemini:gemini-2.5-flash-preview-04-17"]
+    "args": ["--directory", ".", "run", "just-prompt", "--default-models", "openai:o3:high,openai:o4-mini:high,anthropic:claude-opus-4-20250514,anthropic:claude-sonnet-4-20250514,gemini:gemini-2.5-pro-preview-03-25,gemini:gemini-2.5-flash-preview-04-17"]
 }
 ```
 
@@ -189,7 +189,7 @@ claude mcp add just-prompt -s project \
 claude mcp add just-prompt -s user \
   -- \
   uv --directory . \
-  run just-prompt --default-models "openai:o3:high,openai:o4-mini:high,anthropic:claude-3-7-sonnet-20250219:4k,gemini:gemini-2.5-pro-preview-03-25,gemini:gemini-2.5-flash-preview-04-17:4k"
+  run just-prompt --default-models "openai:o3:high,openai:o4-mini:high,anthropic:claude-opus-4-20250514,anthropic:claude-sonnet-4-20250514,gemini:gemini-2.5-pro-preview-03-25,gemini:gemini-2.5-flash-preview-04-17"
 ```
 
 
@@ -288,15 +288,15 @@ system instruction to approximate the requested effort level.
 
 # Thinking Tokens with Claude
 
-The Anthropic Claude model `claude-3-7-sonnet-20250219` supports extended thinking capabilities using thinking tokens. This allows Claude to do more thorough thought processes before answering.
+The Anthropic Claude models `claude-opus-4-20250514` and `claude-sonnet-4-20250514` support extended thinking capabilities using thinking tokens. This allows Claude to do more thorough thought processes before answering.
 
 You can enable thinking tokens by adding a suffix to the model name in this format:
-- `anthropic:claude-3-7-sonnet-20250219:1k` - Use 1024 thinking tokens
-- `anthropic:claude-3-7-sonnet-20250219:4k` - Use 4096 thinking tokens
-- `anthropic:claude-3-7-sonnet-20250219:8000` - Use 8000 thinking tokens
+- `anthropic:claude-opus-4-20250514:1k` - Use 1024 thinking tokens for Opus 4
+- `anthropic:claude-sonnet-4-20250514:4k` - Use 4096 thinking tokens for Sonnet 4
+- `anthropic:claude-opus-4-20250514:8000` - Use 8000 thinking tokens for Opus 4
 
 Notes:
-- Thinking tokens are only supported for the `claude-3-7-sonnet-20250219` model
+- Thinking tokens are supported for `claude-opus-4-20250514`, `claude-sonnet-4-20250514`, and `claude-3-7-sonnet-20250219` models
 - Valid thinking token budgets range from 1024 to 16000
 - Values outside this range will be automatically adjusted to be within range
 - You can specify the budget with k notation (1k, 4k, etc.) or with exact numbers (1024, 4096, etc.)
