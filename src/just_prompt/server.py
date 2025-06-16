@@ -89,6 +89,40 @@ class CEOAndBoardSchema(BaseModel):
     )
 
 
+def parse_json_array_parameter(param: Any) -> Optional[List[str]]:
+    """
+    Parse a parameter that should be a list of strings.
+    Handles cases where MCP sends JSON arrays as strings.
+    
+    Args:
+        param: The parameter value (could be None, list, or string)
+        
+    Returns:
+        None, a list of strings, or the original value if already a list
+    """
+    if param is None:
+        return None
+    
+    if isinstance(param, list):
+        return param
+    
+    if isinstance(param, str):
+        try:
+            import json
+            parsed = json.loads(param)
+            if isinstance(parsed, list):
+                return parsed
+            else:
+                # If it's not a list after parsing, treat as single item
+                return [param]
+        except json.JSONDecodeError:
+            # If it's not valid JSON, treat as single item
+            return [param]
+    
+    # For any other type, return as-is
+    return param
+
+
 async def serve(default_models: str = DEFAULT_MODEL) -> None:
     """
     Start the MCP server.
@@ -158,7 +192,7 @@ async def serve(default_models: str = DEFAULT_MODEL) -> None:
         
         try:
             if name == JustPromptTools.PROMPT:
-                models_to_use = arguments.get("models_prefixed_by_provider")
+                models_to_use = parse_json_array_parameter(arguments.get("models_prefixed_by_provider"))
                 responses = prompt(arguments["text"], models_to_use)
                 
                 # Get the model names that were actually used
@@ -171,7 +205,7 @@ async def serve(default_models: str = DEFAULT_MODEL) -> None:
                 )]
                 
             elif name == JustPromptTools.PROMPT_FROM_FILE:
-                models_to_use = arguments.get("models_prefixed_by_provider")
+                models_to_use = parse_json_array_parameter(arguments.get("models_prefixed_by_provider"))
                 responses = prompt_from_file(arguments["abs_file_path"], models_to_use)
                 
                 # Get the model names that were actually used
@@ -185,7 +219,7 @@ async def serve(default_models: str = DEFAULT_MODEL) -> None:
                 
             elif name == JustPromptTools.PROMPT_FROM_FILE_TO_FILE:
                 output_dir = arguments.get("abs_output_dir", ".")
-                models_to_use = arguments.get("models_prefixed_by_provider")
+                models_to_use = parse_json_array_parameter(arguments.get("models_prefixed_by_provider"))
                 file_paths = prompt_from_file_to_file(
                     arguments["abs_file_path"], 
                     models_to_use,
@@ -217,7 +251,7 @@ async def serve(default_models: str = DEFAULT_MODEL) -> None:
             elif name == JustPromptTools.CEO_AND_BOARD:
                 file_path = arguments["abs_file_path"]
                 output_dir = arguments.get("abs_output_dir", ".")
-                models_to_use = arguments.get("models_prefixed_by_provider")
+                models_to_use = parse_json_array_parameter(arguments.get("models_prefixed_by_provider"))
                 ceo_model = arguments.get("ceo_model", DEFAULT_CEO_MODEL)
                 
                 ceo_decision_file = ceo_and_board_prompt(
