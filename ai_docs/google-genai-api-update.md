@@ -1,65 +1,48 @@
-# Google GenAI API Update
+# Google GenAI SDK v1.22.0 Documentation
 
-## PyPI Package Information
+## Overview
 
-### Latest Version
-- Package: google-genai
-- Latest version: 1.22.0 (current installed: 1.11.0)
-- Summary: GenAI Python SDK
-- Documentation: https://googleapis.github.io/python-genai/
+The Google Gen AI SDK provides an interface for developers to integrate Google's generative models into their Python applications. It supports both the Gemini Developer API and Vertex AI APIs.
 
-### Dependencies
-```json
-{
-  "anyio": ">=4.8.0,<5.0.0",
-  "google-auth": ">=2.14.1,<3.0.0",
-  "httpx": ">=0.28.1,<1.0.0",
-  "pydantic": ">=2.0.0,<3.0.0",
-  "requests": ">=2.28.1,<3.0.0",
-  "tenacity": ">=8.2.3,<9.0.0",
-  "websockets": ">=13.0.0,<15.1.0",
-  "typing-extensions": ">=4.11.0,<5.0.0"
-}
+**Latest Version:** 1.22.0 (Released: about 23 hours ago)
+
+## Installation
+
+```bash
+pip install google-genai
 ```
 
-### Recent Versions
-- 1.22.0 (latest)
-- 1.21.1
-- 1.21.0
-- 1.20.0
-- 1.19.0
-- 1.18.0
-- 1.17.0
-- 1.16.1
-- 1.16.0
-- 1.15.0
+## Key Features
 
-## Correct API Usage
+### 1. Client Creation
 
-The correct way to list models using the google-genai library is:
-
+**For Gemini Developer API:**
 ```python
 from google import genai
-
-# Initialize client
-client = genai.Client(api_key="your-api-key")
-
-# List models
-models = client.models.list()
-model_list = []
-for model in models:
-    model_list.append(model.name)
+client = genai.Client(api_key='GEMINI_API_KEY')
 ```
 
-### Key API Examples from Documentation
-
-1. **List Models**:
+**For Vertex AI:**
 ```python
-for model in client.models.list():
-    print(model)
+from google import genai
+client = genai.Client(
+    vertexai=True, 
+    project='your-project-id', 
+    location='us-central1'
+)
 ```
 
-2. **Generate Content**:
+### 2. Model Support
+
+The SDK supports various models including:
+- **Gemini 2.0 Flash**: `gemini-2.0-flash-001`
+- **Text Embedding**: `text-embedding-004`
+- **Imagen 3.0**: `imagen-3.0-generate-002` (image generation)
+- **Veo 2.0**: `veo-2.0-generate-001` (video generation)
+
+### 3. Core Capabilities
+
+#### Generate Content
 ```python
 response = client.models.generate_content(
     model='gemini-2.0-flash-001', 
@@ -68,33 +51,131 @@ response = client.models.generate_content(
 print(response.text)
 ```
 
-3. **With Config**:
+#### Chat Sessions
 ```python
-from google.genai import types
+chat = client.chats.create(model='gemini-2.0-flash-001')
+response = chat.send_message('tell me a story')
+print(response.text)
+```
+
+#### Function Calling
+The SDK supports automatic Python function calling:
+```python
+def get_current_weather(location: str) -> str:
+    """Returns the current weather."""
+    return 'sunny'
 
 response = client.models.generate_content(
     model='gemini-2.0-flash-001',
-    contents='high',
+    contents='What is the weather like in Boston?',
+    config=types.GenerateContentConfig(tools=[get_current_weather]),
+)
+```
+
+#### JSON Response Schema
+Supports Pydantic models for structured output:
+```python
+from pydantic import BaseModel
+
+class CountryInfo(BaseModel):
+    name: str
+    population: int
+    capital: str
+
+response = client.models.generate_content(
+    model='gemini-2.0-flash-001',
+    contents='Give me information for the United States.',
     config=types.GenerateContentConfig(
-        system_instruction='I say high, you say low',
-        max_output_tokens=3,
-        temperature=0.3,
+        response_mime_type='application/json',
+        response_schema=CountryInfo,
     ),
 )
 ```
 
-## Available Gemini 2.5 Pro Models
+### 4. Advanced Features
 
-As of the latest API call, the following Gemini 2.5 Pro models are available:
-- models/gemini-2.5-pro
-- models/gemini-2.5-pro-preview-03-25
-- models/gemini-2.5-pro-preview-05-06
-- models/gemini-2.5-pro-preview-06-05
-- models/gemini-2.5-pro-preview-tts
+#### Streaming Support
+```python
+for chunk in client.models.generate_content_stream(
+    model='gemini-2.0-flash-001', 
+    contents='Tell me a story in 300 words.'
+):
+    print(chunk.text, end='')
+```
 
-## Key Changes
-1. Use `client.models.list()` instead of `client.list_models()`
-2. The method returns an iterator of model objects
-3. Models are prefixed with "models/" in the API response
-4. Total models available: 58 (including various Gemini versions)
-5. Library version should be updated from 1.11.0 to 1.22.0
+#### Async Support
+```python
+response = await client.aio.models.generate_content(
+    model='gemini-2.0-flash-001', 
+    contents='Tell me a story in 300 words.'
+)
+```
+
+#### Caching
+```python
+cached_content = client.caches.create(
+    model='gemini-2.0-flash-001',
+    config=types.CreateCachedContentConfig(
+        contents=[...],
+        system_instruction='What is the sum of the two pdfs?',
+        display_name='test cache',
+        ttl='3600s',
+    ),
+)
+```
+
+#### Fine-tuning
+Supports supervised fine-tuning with different approaches for Vertex AI (GCS) and Gemini Developer API (inline examples).
+
+### 5. API Configuration
+
+#### API Version Selection
+```python
+from google.genai import types
+
+# For stable API endpoints
+client = genai.Client(
+    vertexai=True,
+    project='your-project-id',
+    location='us-central1',
+    http_options=types.HttpOptions(api_version='v1')
+)
+```
+
+#### Proxy Support
+```bash
+export HTTPS_PROXY='http://username:password@proxy_uri:port'
+export SSL_CERT_FILE='client.pem'
+```
+
+### 6. Error Handling
+
+```python
+from google.genai import errors
+
+try:
+    client.models.generate_content(
+        model="invalid-model-name",
+        contents="What is your name?",
+    )
+except errors.APIError as e:
+    print(e.code)  # 404
+    print(e.message)
+```
+
+## Platform Support
+
+- **Python Version:** >=3.9
+- **Supported Python Versions:** 3.9, 3.10, 3.11, 3.12, 3.13
+- **License:** Apache Software License (Apache-2.0)
+- **Operating System:** OS Independent
+
+## Additional Resources
+
+- **Homepage:** https://github.com/googleapis/python-genai
+- **Documentation:** https://googleapis.github.io/python-genai/
+- **PyPI Page:** https://pypi.org/project/google-genai/
+
+## Recent Updates
+
+The v1.22.0 release continues to support the latest Gemini models and maintains compatibility with both Gemini Developer API and Vertex AI platforms. The SDK provides comprehensive support for generative AI tasks including text generation, image generation, video generation, embeddings, and more.
