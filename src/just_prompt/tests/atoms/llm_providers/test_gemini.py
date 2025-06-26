@@ -94,3 +94,25 @@ def test_prompt_without_thinking():
     assert isinstance(response, str)
     assert len(response) > 0
     assert "berlin" in response.lower() or "Berlin" in response, f"Expected 'Berlin' in response: {response}"
+
+
+def test_gemini_2_5_pro_availability():
+    """Test if Gemini 2.5 Pro model is available."""
+    models = gemini.list_models()
+    
+    # Print all available models for debugging
+    print("\nAvailable Gemini models:")
+    for model in sorted(models):
+        print(f"  - {model}")
+    
+    # Check if any Gemini 2.5 Pro variant is available
+    gemini_2_5_pro_models = [model for model in models if "gemini-2.5-pro" in model.lower()]
+    
+    if gemini_2_5_pro_models:
+        print(f"\nFound Gemini 2.5 Pro models: {gemini_2_5_pro_models}")
+    else:
+        print("\nNo Gemini 2.5 Pro models found!")
+        print("You may need to update the google-genai library")
+    
+    # This assertion will fail if no Gemini 2.5 Pro is found
+    assert len(gemini_2_5_pro_models) > 0, "Gemini 2.5 Pro model not found - may need to update google-genai library"

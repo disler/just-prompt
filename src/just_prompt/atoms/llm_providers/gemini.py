@@ -167,11 +167,15 @@ def list_models() -> List[str]:
     try:
         logger.info("Listing Gemini models")
         
-        # Get the list of models
+        # Get the list of models using the correct API method
         models = []
-        available_models = client.list_models()
+        available_models = client.models.list()
         for m in available_models:
-            if "generateContent" in m.supported_generation_methods:
+            # Check if the model supports content generation
+            if hasattr(m, 'supported_generation_methods') and "generateContent" in m.supported_generation_methods:
+                models.append(m.name)
+            else:
+                # If supported_generation_methods is not available, include all models
                 models.append(m.name)
                 
         # Format model names - strip the "models/" prefix if present
@@ -180,13 +184,5 @@ def list_models() -> List[str]:
         return formatted_models
     except Exception as e:
         logger.error(f"Error listing Gemini models: {e}")
-        # Return some known models if API fails
-        logger.info("Returning hardcoded list of known Gemini models")
-        return [
-            "gemini-1.5-pro",
-            "gemini-1.5-flash",
-            "gemini-1.5-flash-latest",
-            "gemini-1.0-pro",
-            "gemini-2.0-flash",
-            "gemini-2.5-flash-preview-04-17"
-        ]
+        # Throw the error instead of returning hardcoded list
+        raise ValueError(f"Failed to list Gemini models: {str(e)}")
