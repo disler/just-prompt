@@ -140,7 +140,7 @@ When starting the server, it will automatically check which API keys are availab
 Copy this and paste it into claude code with BUT don't run until you copy the json
 
 ```
-claude mcp add just-prompt "$(pbpaste)"
+claude mcp add-json just-prompt "$(pbpaste)"
 ```
 
 JSON to copy
