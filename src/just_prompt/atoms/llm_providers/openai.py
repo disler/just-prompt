@@ -40,7 +40,7 @@ client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 # ---------------------------------------------------------------------------
 
 
-_REASONING_ELIGIBLE_MODELS = {"o4-mini", "o3-mini", "o3"}
+_REASONING_ELIGIBLE_MODELS = {"o4-mini", "o3-mini", "o3", "gpt-5", "gpt-5-mini", "gpt-5-nano"}
 _REASONING_LEVELS = {"low", "medium", "high"}
 
 
